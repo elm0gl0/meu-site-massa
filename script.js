@@ -1,3 +1,3 @@
 function clicou() {
-  alert("Você clicou no botão!");
+  alert("Parabéns pela clicada!");
 }
