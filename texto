@@ -1,0 +1,86 @@
+import json
+import os
+
+# Arquivo para armazenar o estoque
+STOCK_FILE = 'estoque.json'
+
+def carregar_estoque():
+    if os.path.exists(STOCK_FILE):
+        with open(STOCK_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def salvar_estoque(estoque):
+    with open(STOCK_FILE, 'w') as f:
+        json.dump(estoque, f, indent=4)
+
+def adicionar_produto(estoque):
+    nome = input("Nome do produto: ")
+    if nome in estoque:
+        print("Produto já existe.")
+        return
+    estoque[nome] = 0.0
+    salvar_estoque(estoque)
+    print("Produto adicionado.")
+
+def entrada(estoque):
+    nome = input("Nome do produto: ")
+    if nome not in estoque:
+        print("Produto não encontrado.")
+        return
+    try:
+        kg = float(input("Quantidade em kg para entrada: "))
+        estoque[nome] += kg
+        salvar_estoque(estoque)
+        print("Entrada registrada.")
+    except ValueError:
+        print("Quantidade inválida.")
+
+def saida(estoque):
+    nome = input("Nome do produto: ")
+    if nome not in estoque:
+        print("Produto não encontrado.")
+        return
+    try:
+        kg = float(input("Quantidade em kg para saída: "))
+        if kg > estoque[nome]:
+            print("Quantidade insuficiente.")
+            return
+        estoque[nome] -= kg
+        salvar_estoque(estoque)
+        print("Saída registrada.")
+    except ValueError:
+        print("Quantidade inválida.")
+
+def visualizar_estoque(estoque):
+    if not estoque:
+        print("Estoque vazio.")
+        return
+    for produto, kg in estoque.items():
+        print(f"{produto}: {kg} kg")
+
+def menu():
+    estoque = carregar_estoque()
+    while True:
+        print("\nSistema de Estoque da Loja")
+        print("1. Adicionar produto")
+        print("2. Entrada de mercadoria")
+        print("3. Saída de mercadoria")
+        print("4. Visualizar estoque")
+        print("5. Sair")
+        opcao = input("Escolha uma opção: ")
+        if opcao == '1':
+            adicionar_produto(estoque)
+        elif opcao == '2':
+            entrada(estoque)
+        elif opcao == '3':
+            saida(estoque)
+        elif opcao == '4':
+            visualizar_estoque(estoque)
+        elif opcao == '5':
+            break
+        else:
+            print("Opção inválida.")
+
+if __name__ == "__main__":
+    menu()
